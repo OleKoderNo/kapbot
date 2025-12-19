@@ -1,19 +1,18 @@
 import { Events } from "discord.js";
+import { ENV } from "../config/env.js";
 import { logger } from "../services/logger.js";
 
 export default (client) => {
 	client.on(Events.GuildMemberAdd, async (member) => {
 		logger.info(`Member joined: ${member.user.tag}`);
 
-		// Try system channel first
-		const channel =
-			member.guild.systemChannel ??
-			member.guild.channels.cache.find(
-				(c) => c.isTextBased() && c.permissionsFor(member.guild.members.me)?.has("SendMessages")
-			);
+		const channel = await member.guild.channels.fetch(ENV.welcomeChannelId).catch(() => null);
+		if (!channel?.isTextBased()) return;
 
-		if (!channel) return;
+		const msg = await channel.send(
+			`👋 Welcome ${member} to **${member.guild.name}**!\nMake yourself at home ⚓`
+		);
 
-		await channel.send(`👋 Welcome **${member.user.username}** to **${member.guild.name}**!`);
+		await msg.react("👋").catch(() => {});
 	});
 };
