@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const factsPath = path.join(__dirname, "../../data/pokefact.json");
+const factsPath = path.join(__dirname, "../../data/pokefacts.json");
 const FUN_FACTS = JSON.parse(fs.readFileSync(factsPath, "utf8"));
 
 export async function execute(interaction) {
